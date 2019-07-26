@@ -1,0 +1,70 @@
+ <!DOCTYPE html>
+    <html height="100%" style="
+        height: -webkit-fill-available; ">
+    	<head>
+    		<meta charset="utf-8">
+    		<title>fisimili</title>
+    		 <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+			<script src="https://pv.sohu.com/cityjson?ie=utf-8"></script>
+			<script>
+				    console.info(returnCitySN["cip"] + ',' + returnCitySN["cname"])
+				    var check = /^[\u4e00-\u9fa5]/;
+				    var rs = check.test(returnCitySN["cname"]);
+				    var cr = $(".hidden-area");
+				    
+				    console.info(rs);
+					
+					
+					$.ajax({
+					dateType: "json",
+					 
+						contentType: 'application/json;charset=utf-8',
+						/*async: false,*/
+						 
+						method:"get",
+						url:"https://summersama.com/wl/wl/getWhere/"+returnCitySN["cip"]+"/"+returnCitySN["cname"],
+						success:function(data){
+							console.info(data)
+						},
+						 
+						
+					})
+					
+					
+			</script>
+    		<style type="text/css">
+    			a:link {
+    				font-size: 12px;
+    				color: #1a6840;
+    				text-decoration: none;
+    			}
+    
+    			a:visited {
+    				font-size: 12px;
+    				color: #1a6840;
+    				text-decoration: none;
+    			}
+    
+    			a:hover {
+    				font-size: 12px;
+    				color: #1a6840;
+    				text-decoration: underline;
+    			}
+    			.d{
+    				text-align: center;margin: 10px;
+    			}
+    			.ax{
+    				color: #1a6840;
+    			}
+    			
+    			
+    		</style>
+    	</head>
+    	<body  style="margin-top: 10px;  text-align: center;">
+    		 <div>
+				 <h1> welcome~</h1>
+			 </div>
+    	</body>
+    </html>
+    

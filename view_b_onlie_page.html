@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="Access-Control-Allow-Origin" content="*" />
+	</head>
+
+	<body style="height: 100%; margin: 0">
+		<div id="container" style="height: 100%"></div>
+		<script type="text/javascript" src="echarts.common.min.js"></script>
+		<!-- <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
+       <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script> -->
+		<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+		<script type="text/javascript">
+			var dom = document.getElementById("container");
+			var myChart = echarts.init(dom);
+			//var chart = echarts.init(containerDom, null, {renderer: 'svg'});
+			var app = {};
+			option = null;
+
+			var dateX = [];
+			var dataY = [];
+			var now = +new Date(1997, 9, 3);
+			var oneDay = 24 * 3600 * 1000;
+			var value = Math.random() * 1000;
+
+			myChart.setOption({
+				xAxis: {
+					type: 'time',
+					splitLine: {
+						show: false
+					},
+					data: dateX
+				},
+				yAxis: {
+					type: 'value'
+				},
+				series: [{
+					data: dataY,
+					type: 'line',
+					smooth: true
+				}]
+
+			})
+
+			function timestampToTime(timestamp) {
+				var date = new Date(timestamp * 1000); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+				var Y = date.getFullYear() + '-';
+				var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+				var D = date.getDate() + ' ';
+				var h = (date.getHours()<10?'0'+date.getHours():date.getHours()) + ':';
+				var m = (date.getMinutes()<10?'0'+date.getMinutes():date.getMinutes()) + ':';
+				var s = (date.getSeconds()<10?'0'+date.getSeconds():date.getSeconds());
+				return D+"日"+h + m + s;
+			}
+
+			myChart.showLoading();
+			var counts = 1152;
+			//c = window.location.hash.replace("#","")
+			//c= parseInt(c);
+			//console.info(c);
+		//	if( typeof(c)=="number" && typeof(c)!="String" && c!="" ){
+				
+			//	counts =c;
+		//	}
+			console.info(counts);
+			$.ajax({
+				type: "GET",
+				url: "https://summersama.com/api/getDataE/1/"+counts,
+				dataType: "json",
+				success: function(rs) {
+					//console.info(rs);
+					$.each(rs, function(n, value) {
+						//console.info(n+' '+value);  
+						dataY.push(value.web_online_count);
+						//timeX = timestampToTime(value.touch_time);
+						//console.info(timeX);
+						dateX.push(value.touch_time);
+						
+						
+					});
+					dateXXX=[];
+					dateXX = dateX.reverse(dateX);
+					dataYY = dataY.reverse(dataY);
+					$.each(dateXX,function(n,value){
+						//console.info(value);
+						timeXX = timestampToTime(value);
+						dateXXX.push(timeXX)
+					})
+					myChart.hideLoading(); //隐藏加载动画
+						myChart.setOption({
+							title:{
+								text:'bilibili在线人数',
+								subtext:'近24小时数据',
+								left:'center'
+							},
+							animationEasing:function (k) {
+        if ((k *= 2) < 1) { return 0.5 * k * k; }
+        return -0.5 * (--k * (k - 2) - 1);
+    },
+							tooltip: {
+      								  trigger: 'axis',
+       								  position: function (pt) {
+         						   return [pt[0], '10%'];
+       								 }
+    								},
+							xAxis: {
+								type: 'category',
+								scale: true,
+								//maxInterval:  1000,
+								//minInterval: 1,
+								data: dateXXX
+							},
+							yAxis: {
+								type: 'value',
+								boundaryGap: [0, '100%'],
+							},
+							series: [{
+								data: dataYY,
+								type: 'line',
+								smooth: true,
+								symbol:'none',
+								sampling:'average',
+								itemStyle:{
+									color:'rgb(41, 128, 185)'	
+								},
+								areaStyle:{
+									color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                    offset: 0,
+                    color: 'rgb(41, 128, 185)'
+                }, {
+                    offset: 1,
+                    color: 'rgb(44, 62, 80)'
+                }])
+},
+								
+							}]
+
+						})
+				},
+				error: function(e) {
+					console.info(e);
+				}
+			})
+
+			function getData() {
+				// $.get("http://summersama.com:8181/getDataE/1",function(rs){
+				//     console.info(rs)
+				// })
+
+				return dataY;
+			}
+
+			function getDate() {
+
+				return dateX;
+			}
+			//option = {
+			//  xAxis: {
+			//      type: 'value',
+			//      data:dateX
+			//  },
+			//  yAxis: {
+			//      type: 'value'
+			//  },
+			//  series: [{
+			//      data: dataY,
+			//      type: 'line',
+			//      smooth: true
+			//  }]
+			//};
+
+			/*setInterval(function() {
+
+			}, 1000);*/
+
+			function sleep(d) {
+				for(var t = Date.now(); Date.now() - t <= d;);
+			}
+			//sleep(1000);
+			//myChart.setOption(option);
+		</script>
+	</body>
+
+</html>
