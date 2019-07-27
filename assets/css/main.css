@@ -2600,10 +2600,10 @@
 /* One */
 
 	#one:before {
-		background-image: url("../../images/paint/p-725.jpg");
-		background-position: top right;
+		background-image: url("../../images/bar728.gif");
+		background-position: bottom left;
 		background-repeat: no-repeat;
-		background-size: cover;
+		background-size: auto;
 		content: '';
 		display: block;
 		height: 15em;
